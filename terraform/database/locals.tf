@@ -4,6 +4,7 @@ locals {
   # Network
   vpc     = data.terraform_remote_state.network.outputs.vpc
   subnets = data.terraform_remote_state.network.outputs.subnets
+  #availability_zones = sort(data.aws_availability_zones.all.names)
   availability_zones = data.terraform_remote_state.network.outputs.selected_availability_zones
 
 

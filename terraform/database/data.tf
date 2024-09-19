@@ -1,4 +1,5 @@
 data "aws_caller_identity" "current" {}
+data "aws_availability_zones" "all" {}
 
 data "terraform_remote_state" "network" {
   backend = "s3"
