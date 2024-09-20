@@ -1,0 +1,109 @@
+- name: Instalacao Zabbix Agent 2 - Ubuntu
+  hosts: Bastion-Host
+  gather_facts: false
+  vars_files:
+    - variables.yaml
+  become: true  # Para garantir que as tarefas sejam executadas como root
+  tasks:
+    - name: Baixando a chave pública do Zabbix
+      apt_key:
+        url: "https://repo.zabbix.com/zabbix-official-repo.key"
+        state: present
+
+    - name: Baixando repositorio
+      apt_repository:
+        repo: "{{ repo_ubuntu }}"
+        state: present
+
+    - name: Atualizar cache de pacotes
+      apt:
+        update_cache: yes
+
+    - name: Fazendo instalacao
+      apt:
+        name:
+          - zabbix-sql-scripts
+          - zabbix-agent2
+          - zabbix-get
+          - zabbix-sender
+        state: present
+
+    - name: Substituir Server no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^Server=.*'
+        line: 'Server={{ zabbix_server }}'
+      register: result_server
+
+    - name: Substituir ServerActive no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^ServerActive=.*'
+        line: 'ServerActive={{ zabbix_server_active }}'
+      register: result_server_active
+
+    - name: Comentar Hostname no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^Hostname=.*'
+        line: '#Hostname=Zabbix server'
+      register: result_hostname
+
+    - name: Ativar UnsafeUserParameters no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^# UnsafeUserParameters=.*'
+        line: 'UnsafeUserParameters=1'
+      register: result_unsafe
+
+    - name: Aumentar Timeout no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^# Timeout=.*'
+        line: 'Timeout=30'
+      register: result_timeout
+
+    - name: Adicionar AllowKey no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        insertbefore: '^DenyKey=system.run\[\*\]'
+        line: 'AllowKey=system.run[*]'
+      register: result_allowkey
+
+    - name: Substituir HostMetadata no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^# HostMetadata=.*'
+        line: 'HostMetadata=linux AAAAAAAAAAAAAAAAAAAAAAAAALTERAR'
+      register: result_hostmetadata
+
+    - name: Substituir # HostMetadataItem por HostMetadataItem=system.uname no arquivo zabbix_agent2.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: '^# HostMetadataItem=.*'
+        line: 'HostMetadataItem=system.uname'
+      register: result_hostmetadataitem
+
+    - name: Habilitar inicializacao do serviço no boot
+      systemd:
+        name: zabbix-agent2
+        enabled: true
+
+    - name: Iniciar serviço
+      systemd:
+        name: zabbix-agent2
+        state: started
+
+    - name: Reiniciar Zabbix Agent 2
+      systemd:
+        name: zabbix-agent2
+        state: restarted
+      when: 
+        - result_server.changed
+        - result_server_active.changed
+        - result_hostname.changed
+        - result_unsafe.changed
+        - result_timeout.changed
+        - result_allowkey.changed
+        - result_hostmetadata.changed
+        - result_hostmetadataitem.changed

@@ -1,0 +1,10 @@
+- hosts: Bastion-Host
+  tasks:
+    - name: Atualizar o cache
+      become: true
+      apt:
+        update_cache: yes
+    - name: Upgrade dos pacotes
+      apt:
+        upgrade: dist
+      become: true
