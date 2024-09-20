@@ -54,7 +54,8 @@ container_definitions = jsonencode([{
       },
       {
         name  = "DATABASE_URL"
-        value = "postgresql://${local.db_user}:${urlencode(local.db_pass)}@${local.db_host}:${local.db_port}/${local.db_name}"
+        value = "postgresql://${local.db_user}:${local.db_password}@${local.db_host}:${local.db_port}/${local.db_name}"
+        #value = "postgresql://${local.db_user}:${urlencode(local.db_pass)}@${local.db_host}:${local.db_port}/${local.db_name}"
       },
       {
         name  = "API_PORT"
@@ -78,7 +79,8 @@ container_definitions = jsonencode([{
       },
       {
         name  = "DB_PASSWORD"
-        value = urlencode(local.db_pass)  # Certifique-se de que o valor está codificado se necessário
+        value = local.db_password
+        #value = urlencode(local.db_pass)  # Certifique-se de que o valor está codificado se necessário
       },
       {
         name  = "AWS_NODEJS_CONNECTION_REUSE_ENABLED"

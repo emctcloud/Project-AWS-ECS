@@ -36,7 +36,7 @@ variable "db_user" {
 variable "db_name" {
   description = "Name of the database to be created within the RDS instance. Example: 'todos' for a todo list application."
   type        = string
-  default     = "todos"
+  default     = "dabataseKXC"
 }
 
 variable "db_machine" {
@@ -67,4 +67,9 @@ variable "az_count" {
   description = "The number of Availability Zones (AZs) over which the RDS instance should be distributed. Increasing the number can enhance availability but may increase cost. Example: 2 for higher availability."
   type        = number
   default     = 1
+}
+variable "db_password" {
+  description = "Pass for Master"
+  type = string
+  #sensitive = true
 }

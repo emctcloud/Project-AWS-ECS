@@ -25,3 +25,6 @@ output "database_kms_key_arn" {
 output "database_password_secret" {
   value = aws_rds_cluster.postgresql.master_user_secret
 }
+output "database_password" {
+  value = var.db_password
+}

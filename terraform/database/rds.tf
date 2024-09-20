@@ -40,8 +40,9 @@ resource "aws_rds_cluster" "postgresql" {
   availability_zones            = local.availability_zones
   database_name                 = var.db_name
   master_username               = var.db_user
-  manage_master_user_password   = true
-  master_user_secret_kms_key_id = aws_kms_key.this.key_id
+  master_password               = var.db_password
+  #manage_master_user_password   = true
+  #master_user_secret_kms_key_id = aws_kms_key.this.key_id
   backup_retention_period       = var.db_backup_retention
   skip_final_snapshot           = var.db_skip_final_snapshot
 

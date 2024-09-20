@@ -16,7 +16,8 @@ locals {
   db_name = data.terraform_remote_state.db.outputs.database_name
   db_user = data.terraform_remote_state.db.outputs.database_username
   db_port = data.terraform_remote_state.db.outputs.database_port
-  db_pass = jsondecode(data.aws_secretsmanager_secret_version.rds_password.secret_string)["password"]
+  db_password = data.terraform_remote_state.db.outputs.database_password
+  #db_pass = jsondecode(data.aws_secretsmanager_secret_version.rds_password.secret_string)["password"]
 
 
   common_tags = {
