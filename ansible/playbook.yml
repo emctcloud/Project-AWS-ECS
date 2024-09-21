@@ -1,10 +1,9 @@
 - hosts: Bastion-Host
   tasks:
-    - name: Atualizar o cache
-      become: true
-      apt:
-        update_cache: yes
-    - name: Upgrade dos pacotes
-      apt:
-        upgrade: dist
+    - name: Editar arquivo zabbix_server.conf
+      lineinfile:
+        path: /etc/zabbix/zabbix_server.conf
+        regexp: '^# DBPassword='
+        line: 'DBPassword=zabbix'
+        state: present
       become: true
