@@ -78,3 +78,38 @@
         - zabbix-server
         - zabbix-agent
         - apache2
+    
+    - name: Instalar dependências do Grafana
+      apt:
+        name:
+          - adduser
+          - libfontconfig1
+          - musl
+        state: present
+      become: yes
+
+    - name: Baixar o pacote do Grafana Enterprise
+      get_url:
+        url: https://dl.grafana.com/enterprise/release/grafana-enterprise_11.2.0_amd64.deb
+        dest: /tmp/grafana-enterprise_11.2.0_amd64.deb
+
+    - name: Instalar o Grafana Enterprise
+      apt:
+        deb: /tmp/grafana-enterprise_11.2.0_amd64.deb
+      become: yes
+  
+    - name: Recarregar o daemon do systemd
+      command: /bin/systemctl daemon-reload
+      become: yes
+
+    - name: Habilitar o serviço do Grafana
+      systemd:
+        name: grafana-server
+        enabled: yes
+      become: yes
+
+    - name: Iniciar o serviço do Grafana
+      systemd:
+        name: grafana-server
+        state: started
+      become: yes    

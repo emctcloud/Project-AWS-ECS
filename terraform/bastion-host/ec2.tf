@@ -16,7 +16,13 @@ resource "aws_security_group" "this" {
     protocol    = "tcp"
     cidr_blocks = [var.allowed_ip]
   }
-  
+   ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = [var.allowed_ip]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

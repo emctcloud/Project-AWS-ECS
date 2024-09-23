@@ -24,7 +24,7 @@ variable "allowed_ip" {
 variable "instance_type" {
   description = "The EC2 instance type for the bastion host, such as 't2.micro'. This determines the hardware of the host"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.medium"
 }
 
 variable "key_name" {
